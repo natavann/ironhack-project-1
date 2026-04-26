@@ -1,0 +1,122 @@
+---
+# Install Docker on ALL instances
+- name: Install Docker on all instances
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update package index
+      yum:
+        update_cache: yes
+
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start and enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+# Deploy Vote + Result on Instance A
+- name: Deploy frontend containers
+  hosts: frontend
+  become: yes
+  tasks:
+    - name: Pull voting-app image
+      docker_image:
+        name: natavan91/voting-app
+        source: pull
+        tag: latest
+
+    - name: Run voting-app container
+      docker_container:
+        name: vote
+        image: natavan91/voting-app:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "5000:80"
+        env:
+          REDIS_HOST: "{{ hostvars['backend-instance-1']['ansible_host'] }}"
+
+    - name: Pull result-app image
+      docker_image:
+        name: natavan91/result-app
+        source: pull
+        tag: latest
+
+    - name: Run result-app container
+      docker_container:
+        name: result
+        image: natavan91/result-app:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "3000:80"
+        env:
+          POSTGRES_HOST: "{{ hostvars['db-instance-1']['ansible_host'] }}"
+# Deploy Redis + Worker on Instance B
+- name: Deploy backend containers
+  hosts: backend
+  become: yes
+  tasks:
+    - name: Pull Redis image
+      docker_image:
+        name: redis
+        source: pull
+        tag: latest
+
+    - name: Run Redis container
+      docker_container:
+        name: redis
+        image: redis:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "6379:6379"
+
+    - name: Pull worker-app image
+      docker_image:
+        name: natavan91/worker-app
+        source: pull
+        tag: latest
+
+    - name: Run worker-app container
+      docker_container:
+        name: worker
+        image: natavan91/worker-app:latest
+        state: started
+        restart_policy: always
+        env:
+          REDIS_HOST: "backend-instance-1"
+          POSTGRES_HOST: "db-instance-1"
+# Deploy PostgreSQL on Instance C
+- name: Deploy database container
+  hosts: db
+  become: yes
+  tasks:
+    - name: Pull PostgreSQL image
+      docker_image:
+        name: postgres
+        source: pull
+        tag: latest
+
+    - name: Run PostgreSQL container
+      docker_container:
+        name: postgres
+        image: postgres:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_USER: "postgres"
+          POSTGRES_PASSWORD: "postgres"
+          POSTGRES_DB: "votes"
