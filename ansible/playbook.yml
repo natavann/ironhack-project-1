@@ -61,12 +61,27 @@
         ports:
           - "3000:80"
         env:
+<<<<<<< Updated upstream
           POSTGRES_HOST: "{{ hostvars['db-instance-1']['ansible_host'] }}"
 # Deploy Redis + Worker on Instance B
+=======
+          PG_HOST: "{{ hostvars['db-instance-1']['ansible_host'] }}"
+          PG_DATABASE: "votes"
+
+# Deploy Redis + Worker on Instance B / # Objective: Worker + Redis need to be in the same network!
+>>>>>>> Stashed changes
 - name: Deploy backend containers
   hosts: backend
   become: yes
   tasks:
+<<<<<<< Updated upstream
+=======
+    - name: Create docker network
+      docker_network:
+        name: voting-network
+        state: present
+
+>>>>>>> Stashed changes
     - name: Pull Redis image
       docker_image:
         name: redis
@@ -79,6 +94,11 @@
         image: redis:latest
         state: started
         restart_policy: always
+<<<<<<< Updated upstream
+=======
+        networks:
+          - name: voting-network
+>>>>>>> Stashed changes
         ports:
           - "6379:6379"
 
@@ -92,11 +112,25 @@
       docker_container:
         name: worker
         image: natavan91/worker-app:latest
+<<<<<<< Updated upstream
         state: started
         restart_policy: always
         env:
           REDIS_HOST: "backend-instance-1"
           POSTGRES_HOST: "db-instance-1"
+=======
+        networks:
+          - name: voting-network
+        state: started
+        restart_policy: always
+        env:
+          REDIS_HOST: "redis"
+          DB_HOST: "{{ hostvars['db-instance-1']['ansible_host'] }}"
+          DB_NAME: "votes"
+          DB_USERNAME: "postgres"
+          DB_PASSWORD: "postgres"
+
+>>>>>>> Stashed changes
 # Deploy PostgreSQL on Instance C
 - name: Deploy database container
   hosts: db
@@ -119,4 +153,8 @@
         env:
           POSTGRES_USER: "postgres"
           POSTGRES_PASSWORD: "postgres"
+<<<<<<< Updated upstream
           POSTGRES_DB: "votes"
+=======
+          POSTGRES_DB: "votes"
+>>>>>>> Stashed changes
