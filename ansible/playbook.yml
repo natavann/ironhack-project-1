@@ -131,6 +131,8 @@
         restart_policy: always
         ports:
           - "5432:5432"
+        volumes:
+          - postgres_data:/var/lib/postgresql/data
         env:
           POSTGRES_USER: "postgres"
           POSTGRES_PASSWORD: "postgres"
