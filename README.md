@@ -146,17 +146,6 @@ natavan91/result-app:latest    # Node.js results dashboard
 natavan91/worker-app:latest    # .NET C# vote processor
 ```
 
-
-### 🌐 Accessing the Application on AWS
-After running `ansible-playbook -i inventory.ini playbook.yml` the app is live on AWS:
-
-| Service | URL |
-|---|---|
-| 🗳️ Vote App | `http://<INSTANCE_A_PUBLIC_IP>:5000` |
-| 📊 Result App | `http://<INSTANCE_A_PUBLIC_IP>:3000` |
-
-> Get the public IP with: `terraform output instance_a_public_ip`
-
 ### ⚠️ ARM vs AMD64 — Key Challenge
 Images built on **Apple Silicon (M1/M2)** use ARM architecture — **incompatible** with AWS EC2 AMD64 instances. Error: `no matching manifest for linux/amd64`.
 
@@ -255,7 +244,6 @@ terraform apply     # Create all 16 resources on AWS
 terraform output    # Show instance IP addresses
 terraform destroy   # Tear down all resources
 ```
-
 ---
 
 ## 🤖 Part 3 — Ansible Configuration & Deployment
@@ -346,6 +334,15 @@ ansible-playbook -i inventory.ini playbook.yml    # Full deployment
 ansible-playbook -i inventory.ini playbook.yml -vvv  # Verbose debug
 ```
 
+### 🌐 Accessing the Application on AWS
+After running `ansible-playbook -i inventory.ini playbook.yml` the app is live on AWS:
+
+| Service | URL |
+|---|---|
+| 🗳️ Vote App | `http://<INSTANCE_A_PUBLIC_IP>:5000` |
+| 📊 Result App | `http://<INSTANCE_A_PUBLIC_IP>:3000` |
+
+> Get the public IP with: `terraform output instance_a_public_ip`
 ---
 
 ## 🔧 Project Add-Ons
