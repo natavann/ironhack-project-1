@@ -375,7 +375,6 @@ volumes:
 | 🔌 OrbStack SSH issue | ProxyCommand intercepted on wrong port | Absolute file paths in inventory.ini |
 | 🐳 Redis-Worker networking | Containers couldn't reach each other | Shared `voting-network` on Instance B |
 | 📍 Dynamic private IPs | IPs change on EC2 restart | Ansible `hostvars` dynamically injects IPs |
-| 🐘 PostgreSQL crash | postgres:latest (v18) volume incompatibility | Pinned to `postgres:16` LTS |
 
 ---
 
