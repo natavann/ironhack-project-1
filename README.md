@@ -418,9 +418,7 @@ terraform destroy
 
 > 💾 Back up PostgreSQL data before destroying:
 > ```bash
-> ssh db-instance-1
-> docker exec postgres pg_dump -U postgres votes > /tmp/votes_backup.sql
-> docker cp postgres:/tmp/votes_backup.sql ./votes_backup.sql
+> ssh db-instance-1 "docker exec postgres pg_dump -U postgres votes" > ~/Desktop/votes_backup.sql
 > ```
 
 ---
