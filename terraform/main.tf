@@ -192,7 +192,7 @@ resource "aws_instance" "instance_a" {
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.vote_result_sg.id]
-  key_name               = "natavan-useast1-dvft"    
+  key_name               = "nata_ed"    
 
   tags = {
     Name = "instance-a-frontend-nata"
@@ -205,7 +205,7 @@ resource "aws_instance" "instance_b" {
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.private.id
   vpc_security_group_ids = [aws_security_group.redis_worker_sg.id]
-  key_name               = "natavan-useast1-dvft"    
+  key_name               = "nata_ed"    
 
   tags = {
     Name = "instance-b-backend-nata"
@@ -218,7 +218,7 @@ resource "aws_instance" "instance_c" {
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.private.id
   vpc_security_group_ids = [aws_security_group.postgres_sg.id]
-  key_name               = "natavan-useast1-dvft"     
+  key_name               = "nata_ed"     
 
   tags = {
     Name = "instance-c-database-nata"
